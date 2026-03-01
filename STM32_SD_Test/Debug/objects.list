@@ -1,3 +1,4 @@
+"./Core/Src/SD_Commands.o"
 "./Core/Src/main.o"
 "./Core/Src/stm32f1xx_hal_msp.o"
 "./Core/Src/stm32f1xx_it.o"
@@ -20,6 +21,7 @@
 "./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o"
 "./FATFS/App/fatfs.o"
 "./FATFS/Target/user_diskio.o"
+"./FATFS/Target/user_diskio_spi.o"
 "./Middlewares/Third_Party/FatFs/src/diskio.o"
 "./Middlewares/Third_Party/FatFs/src/ff.o"
 "./Middlewares/Third_Party/FatFs/src/ff_gen_drv.o"

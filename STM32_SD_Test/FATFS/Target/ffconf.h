@@ -1,11 +1,11 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  *  FatFs - FAT file system module configuration file  R0.11 (C)ChaN, 2015
+  *  FatFs - Generic FAT file system module  R0.12c (C)ChaN, 2017
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2026 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -162,7 +162,7 @@
 /* USER CODE BEGIN Volumes */
 #define _STR_VOLUME_ID          0	/* 0:Use only 0-9 for drive ID, 1:Use strings for drive ID */
 #define _VOLUME_STRS            "RAM","NAND","CF","SD1","SD2","USB1","USB2","USB3"
-/* _STR_VOLUME_ID option switches string volume ID feature.
+/* _STR_VOLUME_ID switches string support of volume ID.
 /  When _STR_VOLUME_ID is set to 1, also pre-defined strings can be used as drive
 /  number in the path name. _VOLUME_STRS defines the drive ID strings for each
 /  logical drives. Number of items must be equal to _VOLUMES. Valid characters for

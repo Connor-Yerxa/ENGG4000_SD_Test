@@ -28,7 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
-#include "SD_Commands.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -106,6 +105,7 @@ void Error_Handler(void);
 #define B1_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
+#define SD_SPI_HANDLE hspi1
 
 /* USER CODE END Private defines */
 

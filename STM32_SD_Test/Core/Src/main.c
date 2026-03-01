@@ -78,7 +78,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	USER_initialize(0);
 
   /* USER CODE END 1 */
 
@@ -107,6 +106,8 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   printf("\r\n~ SD card demo by kiwih ~\r\n\r\n");
+
+  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
 
   HAL_Delay(1000); //a short delay is important to let the SD card settle
 
@@ -263,7 +264,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -402,10 +403,10 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, DISPL_LED_Pin|DISPL_DC_Pin|DISPL_RST_Pin|EXCIT2_Pin
-                          |SD_CS_Pin|GPS_Wake_Pin, GPIO_PIN_RESET);
+                          |GPS_Wake_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, DISPL_CS_Pin|RTD_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, DISPL_CS_Pin|RTD_CS_Pin|SD_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(THERM_CS_GPIO_Port, THERM_CS_Pin, GPIO_PIN_SET);
@@ -420,9 +421,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : DISPL_LED_Pin DISPL_DC_Pin DISPL_RST_Pin DISPL_CS_Pin
-                           EXCIT2_Pin SD_CS_Pin GPS_Wake_Pin */
+                           EXCIT2_Pin GPS_Wake_Pin */
   GPIO_InitStruct.Pin = DISPL_LED_Pin|DISPL_DC_Pin|DISPL_RST_Pin|DISPL_CS_Pin
-                          |EXCIT2_Pin|SD_CS_Pin|GPS_Wake_Pin;
+                          |EXCIT2_Pin|GPS_Wake_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -454,6 +455,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B5_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SD_CS_Pin */
+  GPIO_InitStruct.Pin = SD_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(SD_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : B6_Pin */
   GPIO_InitStruct.Pin = B6_Pin;
