@@ -64,8 +64,8 @@ all: main-build
 main-build: ECE4000_SD_Test.elf secondary-outputs
 
 # Tool invocations
-ECE4000_SD_Test.elf ECE4000_SD_Test.map: $(OBJS) $(USER_OBJS) C:\Users\cbyer\Documents\_gitRepos\ENGG4000_SD_Test\STM32_SD_Test\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "ECE4000_SD_Test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\cbyer\Documents\_gitRepos\ENGG4000_SD_Test\STM32_SD_Test\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ECE4000_SD_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+ECE4000_SD_Test.elf ECE4000_SD_Test.map: $(OBJS) $(USER_OBJS) C:\Users\cbyer\Documents\_GitRepos\ENGG4000_SD_Test\STM32_SD_Test\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "ECE4000_SD_Test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\cbyer\Documents\_GitRepos\ENGG4000_SD_Test\STM32_SD_Test\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ECE4000_SD_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
