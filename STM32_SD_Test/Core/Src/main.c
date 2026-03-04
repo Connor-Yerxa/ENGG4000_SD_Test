@@ -121,6 +121,7 @@ int main(void)
 
 
   int connected = sd_mount();
+//  sd_write_file("test1.txt", "hello from STM32\r\n");
   sd_list_files();
   sd_unmount();
 

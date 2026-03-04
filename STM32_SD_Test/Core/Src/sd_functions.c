@@ -27,6 +27,10 @@
 char sd_path[4];
 FATFS fs;
 
+
+static DIR dir;
+static FILINFO fno;
+
 //int sd_format(void) {
 //	// Pre-mount required for legacy FatFS
 //	f_mount(&fs, sd_path, 0);
@@ -249,8 +253,8 @@ FRESULT sd_create_directory(const char *path) {
 }
 
 void sd_list_directory_recursive(const char *path, int depth) {
-	DIR dir;
-	FILINFO fno;
+//	DIR dir;
+//	FILINFO fno;
 	FRESULT res = f_opendir(&dir, path);
 	if (res != FR_OK) {
 		printf("%*s[ERR] Cannot open: %s\r\n", depth * 2, "", path);
@@ -280,5 +284,6 @@ void sd_list_directory_recursive(const char *path, int depth) {
 void sd_list_files(void) {
 	printf("📂 Files on SD Card:\r\n");
 	sd_list_directory_recursive(sd_path, 0);
+//	sd_list_directory_recursive("/", 0);
 	printf("\r\n\r\n");
 }
