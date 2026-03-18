@@ -14,7 +14,7 @@
  *    You are free to use and modify it for learning and development.
  ******************************************************************************/
 
-
+#include "sd_functions.h"
 #include "fatfs.h"
 #include "sd_diskio_spi.h"
 #include "sd_spi.h"
@@ -30,6 +30,21 @@ FATFS fs;
 
 static DIR dir;
 static FILINFO fno;
+
+
+void sd_test_read_raw(void) {
+    uint8_t buf[512];
+    if (SD_ReadBlocks(buf, 0, 1) != SD_OK) {
+        printf("Raw read failed\n");
+        return;
+    }
+
+    printf("Sector 0 first 16 bytes:\r\n");
+    for (int i = 0; i < 16; i++) {
+        printf("%02X ", buf[i]);
+    }
+    printf("\r\n");
+}
 
 //int sd_format(void) {
 //	// Pre-mount required for legacy FatFS
@@ -134,7 +149,7 @@ int sd_write_file(const char *filename, const char *text) {
 
 	res = f_write(&file, text, strlen(text), &bw);
 	f_close(&file);
-	printf("Write %u bytes to %s\r\n", bw, filename);
+	if(PRINT) printf("Write %u bytes to %s\r\n", bw, filename);
 	return (res == FR_OK && bw == strlen(text)) ? FR_OK : FR_DISK_ERR;
 }
 
@@ -152,7 +167,7 @@ int sd_append_file(const char *filename, const char *text) {
 
 	res = f_write(&file, text, strlen(text), &bw);
 	f_close(&file);
-	printf("Appended %u bytes to %s\r\n", bw, filename);
+	if(PRINT) printf("Appended %u bytes to %s\r\n", bw, filename);
 	return (res == FR_OK && bw == strlen(text)) ? FR_OK : FR_DISK_ERR;
 }
 
@@ -181,15 +196,15 @@ int sd_read_file(const char *filename, char *buffer, UINT bufsize, UINT *bytes_r
 		return res;
 	}
 
-	printf("Read %u bytes from %s\r\n", *bytes_read, filename);
+	if(PRINT) printf("Read %u bytes from %s\r\n", *bytes_read, filename);
 	return FR_OK;
 }
 
-typedef struct CsvRecord {
-	char field1[32];
-	char field2[32];
-	int value;
-} CsvRecord;
+//typedef struct CsvRecord {
+//	char field1[32];
+//	char field2[32];
+//	int value;
+//} CsvRecord;
 
 int sd_read_csv(const char *filename, CsvRecord *records, int max_records, int *record_count) {
 	FIL file;
@@ -202,7 +217,7 @@ int sd_read_csv(const char *filename, CsvRecord *records, int max_records, int *
 		return res;
 	}
 
-	printf("📄 Reading CSV: %s\r\n", filename);
+	if(PRINT) printf("📄 Reading CSV: %s\r\n", filename);
 	while (f_gets(line, sizeof(line), &file) && *record_count < max_records) {
 		char *token = strtok(line, ",");
 		if (!token) continue;
@@ -224,7 +239,7 @@ int sd_read_csv(const char *filename, CsvRecord *records, int max_records, int *
 	f_close(&file);
 
 	// Print parsed data
-	for (int i = 0; i < *record_count; i++) {
+	if(PRINT) for (int i = 0; i < *record_count; i++) {
 		printf("[%d] %s | %s | %d", i,
 				records[i].field1,
 				records[i].field2,
@@ -251,6 +266,66 @@ FRESULT sd_create_directory(const char *path) {
 	printf("Create directory %s: %s\r\n", path, (res == FR_OK ? "OK" : "Failed"));
 	return res;
 }
+
+//void sd_list_files_simple(void) {
+////    DIR d;
+////    FILINFO fi;
+//    FRESULT res;
+//
+//    printf("Simple list:\r\n");
+//    res = f_opendir(&dir, "/");
+//    printf("opendir = %d\r\n", res);
+//    if (res != FR_OK) return;
+//
+//    while (1) {
+//        res = f_readdir(&dir, &fno);
+//        if (res != FR_OK || fno.fname[0] == 0) break;
+//
+//        // Skip bogus entries that look like 0xFF-filled junk
+//        if ((uint8_t)fno.fname[0] == 0xFF || fno.fsize == 0xFFFFFFFF) {
+//            continue;
+//        }
+//
+//        printf("  %s (%lu bytes)\r\n", fno.fname, (unsigned long)fno.fsize);
+//    }
+//
+//
+//    f_closedir(&dir);
+//}
+void sd_list_files_simple(void) {
+//    DIR dir;
+//    FILINFO fno;
+    FRESULT res;
+
+    printf("Simple list:\r\n");
+
+    res = f_opendir(&dir, "/");
+    printf("opendir = %d\r\n", res);
+    if (res != FR_OK) return;
+
+    while (1) {
+        res = f_readdir(&dir, &fno);
+        if (res != FR_OK) break;
+
+        // End of directory
+        if (fno.fname[0] == 0) break;
+
+        // Skip deleted entries (0xE5) and uninitialized entries (0xFF)
+        uint8_t c = (uint8_t)fno.fname[0];
+        if (c == 0xE5 || c == 0xFF) continue;
+
+        // Skip volume labels
+        if (fno.fattrib & AM_VOL) continue;
+
+        printf("  %s (%lu bytes)\r\n",
+               fno.fname,
+               (unsigned long)fno.fsize);
+    }
+
+    f_closedir(&dir);
+}
+
+
 
 void sd_list_directory_recursive(const char *path, int depth) {
 //	DIR dir;
@@ -283,7 +358,9 @@ void sd_list_directory_recursive(const char *path, int depth) {
 
 void sd_list_files(void) {
 	printf("📂 Files on SD Card:\r\n");
-	sd_list_directory_recursive(sd_path, 0);
+//	sd_list_directory_recursive(sd_path, 0);
 //	sd_list_directory_recursive("/", 0);
+
+	sd_list_files_simple();
 	printf("\r\n\r\n");
 }
